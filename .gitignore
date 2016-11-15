@@ -1,3 +1,6 @@
 .idea
 *.iml
-
+scenery.biz/*.iml
+scenery.common/*.iml
+scenery.dal/*.iml
+scenery.web/*.iml
