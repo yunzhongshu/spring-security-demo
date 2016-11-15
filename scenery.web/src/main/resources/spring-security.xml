@@ -1,0 +1,122 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+
+
+    <http auto-config="true"> <!-- entry-point-ref="loginUrlAuthenticationEntryPoint" 用了form-login就不需要这个配置了-->
+
+        <intercept-url pattern="/login.html" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <logout logout-success-url="/login.html" logout-url="/logout.do"  delete-cookies="JSESSIONID"/>
+        <!-- 退出登陆时，删除session对应的cookie -->
+
+
+        <form-login login-page="/login.html"
+                    login-processing-url="/login.do"
+                    username-parameter="username"
+                    password-parameter="password"
+                    default-target-url="/index.html"
+                    always-use-default-target="true"
+                    authentication-failure-handler-ref="exceptionMappingAuthenticationFailureHandler"
+                />
+
+        <!--
+            session管理
+            invalid-session-url=session过期之后跳转到的链接
+            session-fixation-protection:session-fixation攻击防御
+        -->
+        <session-management invalid-session-url="/login.html" session-fixation-protection="migrateSession">
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+        </session-management>
+
+        <access-denied-handler ref="myAccessDeniedHandler" />
+
+        <!--
+        添加 FILTER_SECURITY_INTERCEPTOR 到 FilterChain
+        FILTER_SECURITY_INTERCEPTOR: 保护web资源，并且在访问被拒绝时抛出异常　
+        -->
+        <custom-filter position="FILTER_SECURITY_INTERCEPTOR" ref="filterSecurityInterceptor" />
+    </http>
+
+
+
+    <!--
+        该类指定了登陆的入口,若ExceptionTranslationFilter中捕获了AuthenticationException或者AccessDeniedException
+        则会跳转到该入口
+     -->
+    <!--<beans:bean id="loginUrlAuthenticationEntryPoint"-->
+                <!--class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">-->
+        <!--<beans:constructor-arg name="loginFormUrl" value="/login.html" />-->
+    <!--</beans:bean>-->
+
+
+
+
+
+    <!-- 定位登陆认证过程中的异常 -->
+    <beans:bean id="exceptionMappingAuthenticationFailureHandler"
+            class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
+        <beans:property name="exceptionMappings">
+            <beans:map>
+                <beans:entry
+                        key="org.springframework.security.core.userdetails.UsernameNotFoundException"
+                        value="/login.html?errType=authentication" />
+                <beans:entry
+                        key="org.springframework.security.authentication.BadCredentialsException"
+                        value="/login.html?errType=authentication" />
+                <beans:entry
+                        key="org.springframework.security.authentication.DisabledException"
+                        value="/login.html?errType=disabled" />
+                <beans:entry key="org.springframework.security.core.AuthenticationException"
+                         value="/login.html?errType=authentication" />
+            </beans:map>
+        </beans:property>
+    </beans:bean>
+
+
+    <!-- 处理ExceptionTranslationFilter捕获的AccessDeniedException -->
+    <beans:bean id="myAccessDeniedHandler" class="com.zyy.scenery.web.security.MyAccessDeniedHandler" />
+
+
+    <beans:bean id="filterSecurityInterceptor"
+            class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+        <beans:property name="authenticationManager" ref="authenticationManager" />
+        <beans:property name="accessDecisionManager" ref="accessDecisionManager" />
+        <beans:property name="securityMetadataSource" ref="myFilterInvocationSecurityMetadataSource" />
+    </beans:bean>
+
+
+    <!--
+    处理认证请求
+    creates a ProviderManager and registers the authentication providers with it
+    -->
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="daoAuthenticationProvider"></authentication-provider>
+    </authentication-manager>
+
+
+    <beans:bean id="daoAuthenticationProvider"
+            class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <beans:property name="hideUserNotFoundExceptions" value="false" />
+        <beans:property name="userDetailsService" ref="myUserDetailsService" />
+        <beans:property name="passwordEncoder" ref="passwordEncoder" />
+    </beans:bean>
+
+    <!--
+        返回UserDetails，其中包括用户名、密码、和他拥有的权限及账号的可用状态
+        Returned UserDetails is an interface that provides getters that guarantee non-null
+        provision of authentication information such as the username, password, granted authorities
+        and whether the user account is enabled or disabled.
+    -->
+    <beans:bean id="myUserDetailsService" class="com.zyy.scenery.web.security.MyUserDetailServiceImpl" />
+
+    <!-- blowfish算法加密 -->
+    <beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+
+    </beans:bean>
+</beans:beans>
