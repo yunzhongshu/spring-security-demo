@@ -5,16 +5,16 @@
  */
 package com.zyy.scenery.biz.user;
 
-import com.zyy.scenery.biz.user.dto.UserDTO;
 import com.zyy.scenery.dal.user.domain.Role;
 
 import java.util.List;
 
 /**
- * UserService.java
- * zhangyunyun      16-11-15 */
-public interface UserService {
+ * FunctionService.java
+ * zhangyunyun      16-11-16 */
+public interface FunctionService {
 
-    public UserDTO queryUserDTOByUserName(String userName);
+    List<String> queryAllFunctions();
 
+    List<Role> queryRolesByFunctions(String functionUrl);
 }

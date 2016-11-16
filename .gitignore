@@ -1,5 +1,7 @@
 .idea
 *.iml
+*.ipr
+*.iws
 scenery.biz/*.iml
 scenery.common/*.iml
 scenery.dal/*.iml
