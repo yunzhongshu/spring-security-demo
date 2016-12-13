@@ -3,7 +3,7 @@
  * Copyright 2016
  * Copyright 2016 linglingqi Group Holding Ltd. All Rights Reserved
  */
-package com.zyy.scenery.dal.user.domain;
+package com.zyy.scenery.dal.domain.user;
 
 /**
  * User.java

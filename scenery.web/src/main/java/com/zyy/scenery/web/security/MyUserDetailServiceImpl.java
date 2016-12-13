@@ -27,8 +27,7 @@ public class MyUserDetailServiceImpl implements UserDetailsService {
         //注入查询用户的服务类查询用户的用户名、密码、可用状态、拥有的角色
         UserDTO userDTO = userService.queryUserDTOByUserName(userName);
 
-        if(userDTO == null)
-            throw new UsernameNotFoundException("用户名"+userName+"不存在!");
+        if (userDTO == null) throw new UsernameNotFoundException("用户名" + userName + "不存在!");
 
         return new MyUserDetails(userDTO);
     }

@@ -9,7 +9,7 @@
 
 
 
-    <http auto-config="true"> <!-- entry-point-ref="loginUrlAuthenticationEntryPoint" 用了form-login就不需要这个配置了-->
+    <http auto-config='true'> <!-- entry-point-ref="loginUrlAuthenticationEntryPoint" 用了form-login就不需要这个配置了-->
 
         <intercept-url pattern="/login.html" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <logout logout-success-url="/login.html" logout-url="/logout.do"  delete-cookies="JSESSIONID"/>
@@ -41,7 +41,7 @@
         添加 FILTER_SECURITY_INTERCEPTOR 到 FilterChain
         FILTER_SECURITY_INTERCEPTOR: 保护web资源，并且在访问被拒绝时抛出异常　
         -->
-        <custom-filter position="FILTER_SECURITY_INTERCEPTOR" ref="filterSecurityInterceptor" />
+        <custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="filterSecurityInterceptor" />
     </http>
 
 
@@ -81,7 +81,7 @@
 
 
     <!-- 处理ExceptionTranslationFilter捕获的AccessDeniedException -->
-    <beans:bean id="myAccessDeniedHandler" class="com.zyy.scenery.web.security.MyAccessDeniedHandler" />
+    <beans:bean id="myAccessDeniedHandler" class="com.lh.uriel.web.security.MyAccessDeniedHandler" />
 
 
     <!--
@@ -124,7 +124,7 @@
         provision of authentication information such as the username, password, granted authorities
         and whether the user account is enabled or disabled.
     -->
-    <beans:bean id="myUserDetailsService" class="com.zyy.scenery.web.security.MyUserDetailServiceImpl" />
+    <beans:bean id="myUserDetailsService" class="com.lh.uriel.web.security.MyUserDetailServiceImpl" />
 
     <!-- blowfish算法加密 -->
     <beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
@@ -146,5 +146,5 @@
     若访问某个web链接，匹配得到该web链接对应资源的角色集合，提供给accessDecisionManager进行权限的判断
     -->
     <beans:bean id="myFilterInvocationSecurityMetadataSource"
-            class="com.zyy.scenery.web.security.MyFilterInvocationSecurityMetadataSource" />
+            class="com.lh.uriel.web.security.MyFilterInvocationSecurityMetadataSource" />
 </beans:beans>

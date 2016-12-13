@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop 
+      http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <context:component-scan base-package="com.zyy.scenery.dal"/>
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <property name="initialSize" value="${jdbc.initialSize}"/>
+        <property name="minIdle" value="${jdbc.minIdle}"/>
+        <property name="maxActive" value="${jdbc.maxActive}"/>
+
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.minEvictableIdleTimeMillis}"/>
+
+        <property name="validationQuery" value="${jdbc.validationQuery}"/>
+        <property name="testWhileIdle" value="${jdbc.testWhileIdle}"/>
+        <property name="testOnBorrow" value="${jdbc.testOnBorrow}"/>
+        <property name="testOnReturn" value="${jdbc.testOnReturn}"/>
+        <property name="maxOpenPreparedStatements" value="${jdbc.maxOpenPreparedStatements}"/>
+        <property name="removeAbandoned" value="${jdbc.removeAbandoned}"/>
+        <property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}"/>
+        <property name="logAbandoned" value="${jdbc.logAbandoned}"/>
+
+        <property name="filters" value="${jdbc.filtes}"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="com.zyy.scenery.dal.persistence"/>
+    </bean>
+
+    <bean id="secTools" class="com.llq.commons.security.SecTools">
+        <constructor-arg index="0" value="sec_perseus_code"/>
+        <constructor-arg index="1" value="local"/>
+        <constructor-arg index="2" value="1"/>
+    </bean>
+
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+          depends-on="dataSource">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="plugins">
+            <list>
+
+                <!--<bean class="com.llq.commons.datasource.page.PageInterceptor">-->
+                    <!--<property name="dialectClass" value="com.llq.commons.datasource.page.dialect.MySQLDialect"/>-->
+                <!--</bean>-->
+
+                <!--<bean class="com.zyy.scenery.dal.support.dbsec.DBSecInterceptor">-->
+                    <!--<property name="secTools">-->
+                        <!--<bean class="com.zyy.scenery.dal.support.dbsec.DBSecTools">-->
+                            <!--<property name="secTools" ref="secTools"/>-->
+                        <!--</bean>-->
+                    <!--</property>-->
+                <!--</bean>-->
+            </list>
+
+        </property>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="nestedTransactionAllowed" value="true"/>
+    </bean>
+
+    <!-- 事务注解驱动，标注@Transactional的类和方法将具有事务性 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="transactionTemplate"
+          class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <context:spring-configured/>
+
+    <bean id="annotationTransactionAspect" factory-method="aspectOf"
+          class="org.springframework.transaction.aspectj.AnnotationTransactionAspect">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+</beans>

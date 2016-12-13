@@ -6,7 +6,7 @@
 package com.zyy.scenery.web.security;
 
 import com.zyy.scenery.biz.user.dto.UserDTO;
-import com.zyy.scenery.dal.user.domain.Role;
+import com.zyy.scenery.dal.domain.user.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +22,7 @@ public class MyUserDetails implements UserDetails {
 
     private UserDTO userDTO;
 
-    public MyUserDetails(UserDTO userDTO){
+    public MyUserDetails(UserDTO userDTO) {
         this.userDTO = userDTO;
     }
 
@@ -90,5 +90,9 @@ public class MyUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return userDTO.getEnabled();
+    }
+
+    public UserDTO getUserDTO(){
+        return userDTO;
     }
 }

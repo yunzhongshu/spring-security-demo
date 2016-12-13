@@ -5,7 +5,7 @@
  */
 package com.zyy.scenery.biz.user;
 
-import com.zyy.scenery.dal.user.domain.Role;
+import com.zyy.scenery.dal.domain.user.Role;
 
 import java.util.List;
 

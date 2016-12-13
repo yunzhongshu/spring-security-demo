@@ -3,17 +3,17 @@
  * Copyright 2016
  * Copyright 2016 linglingqi Group Holding Ltd. All Rights Reserved
  */
-package com.zyy.scenery.dal.user;
+package com.zyy.scenery.dal.persistence.user;
 
-import com.zyy.scenery.dal.user.domain.Role;
-import com.zyy.scenery.dal.user.domain.User;
+import com.zyy.scenery.dal.domain.user.Role;
+import com.zyy.scenery.dal.domain.user.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * UserDaoImpl.java
- * zhangyunyun      16-11-15 */
+ * zhangyunyun      16-12-13 */
 @Repository("userDao")
 public class UserDaoImpl implements UserDao {
 

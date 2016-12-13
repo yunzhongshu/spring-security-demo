@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appenders>
+        <!--打印返利日志-->
+
+        <Console name="console" class="org.apache.log4j.ConsoleAppender">
+            <ThresholdFilter level="${log.level}" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %c{36} %L %M - %msg%xEx%n %X{clientIP}"/>
+        </Console>
+
+
+        <RollingFile name="unknowError" fileName="${log.path}/unknowError.log"
+                     filePattern="${log.path}/${date:yyyy-MM}/unknowError-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %c{36} %L %M - %msg%xEx%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+
+    </appenders>
+    <loggers>
+
+
+        <Logger name="unknowError" level="ERROR" additivity="false">
+            <AppenderRef ref="unknowError"/>
+        </Logger>
+
+
+        <root level="${log.level}">
+            <AppenderRef ref="console"/>
+        </root>
+    </loggers>
+</configuration>

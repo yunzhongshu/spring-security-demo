@@ -6,9 +6,9 @@
 package com.zyy.scenery.biz.user;
 
 import com.zyy.scenery.biz.user.dto.UserDTO;
-import com.zyy.scenery.dal.user.UserDao;
-import com.zyy.scenery.dal.user.domain.Role;
-import com.zyy.scenery.dal.user.domain.User;
+import com.zyy.scenery.dal.persistence.user.UserDao;
+import com.zyy.scenery.dal.domain.user.Role;
+import com.zyy.scenery.dal.domain.user.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

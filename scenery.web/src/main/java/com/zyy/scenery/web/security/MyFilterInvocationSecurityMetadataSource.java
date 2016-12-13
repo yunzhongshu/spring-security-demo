@@ -7,7 +7,7 @@ package com.zyy.scenery.web.security;
 
 import com.zyy.scenery.biz.user.FunctionService;
 import com.zyy.scenery.biz.user.RoleService;
-import com.zyy.scenery.dal.user.domain.Role;
+import com.zyy.scenery.dal.domain.user.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
@@ -26,7 +26,7 @@ import java.util.*;
 public class MyFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource, InitializingBean {
 
     @Autowired
-    private RoleService roleService;
+    private RoleService     roleService;
     @Autowired
     private FunctionService functionService;
 
@@ -42,22 +42,21 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
      * 缓存所有资源－分配的角色　的关系映射
      * 调用该访法可以刷新配置
      */
-    public void loadMetaDataInfo(){
+    public void loadMetaDataInfo() {
 
         requestMap = new HashMap<>();
 
         List<String> functionList = functionService.queryAllFunctions();
-        for(String functionUrl: functionList){
+        for (String functionUrl : functionList) {
 
             Set<ConfigAttribute> allAttributes = new HashSet<>();
             List<Role> roleList = functionService.queryRolesByFunctions(functionUrl);
-            for(Role role: roleList) {
+            for (Role role : roleList) {
                 allAttributes.add(new SecurityConfig(role.getName()));
             }
             requestMap.put(new AntPathRequestMatcher(functionUrl), allAttributes);
 
         }
-
 
     }
 
@@ -70,8 +69,8 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
 
-        HttpServletRequest request = ((FilterInvocation)o).getRequest();
-        for(Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap.entrySet()) {
+        HttpServletRequest request = ((FilterInvocation) o).getRequest();
+        for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap.entrySet()) {
             if(entry.getKey().matches(request)) {
                 return entry.getValue();
             }
